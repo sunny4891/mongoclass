@@ -19,6 +19,7 @@ const AddressSchema = new schema({
 const userSchema = new schema({
   name: String,
   email: String,
+  age: Number,
   password: String,
   phone: [String],
   address: [AddressSchema],
@@ -55,8 +56,9 @@ const addresss = [
 ];
 
 const userData = {
-  name: "Avijit Saha",
+  name: "Sandhya Saha",
   email: "avijit.saha@gmail.com",
+  age: 36,
   password: "12345678",
   phone: ["1234567890", "8765432190", "1593574690"],
   address: addresss,
@@ -95,4 +97,81 @@ async function anotherUpdateProcess() {
   console.log(user);
 }
 
-anotherUpdateProcess();
+// anotherUpdateProcess();
+
+async function anotherUpdateProcessWithOtherWork() {
+  const user = await UserModel.findByIdAndUpdate(
+    "655af7996c044a6013f3d47c",
+    {
+      $inc: {
+        age: 10,
+      },
+      $set: {
+        password: "password",
+      },
+      $push: {
+        phone: "111222333444",
+      },
+    },
+    {
+      new: true,
+    }
+  )
+    .then((res) => res)
+    .catch((err) => err);
+  console.log(user);
+}
+
+// anotherUpdateProcessWithOtherWork();
+
+// update many values inside mongodb
+
+async function updateMany() {
+  const user = await UserModel.find()
+    .select("name password age")
+    .then((res) => res)
+    .catch((err) => err);
+
+  let updateUserMany = await UserModel.updateMany(
+    { name: new RegExp("jit", "i") },
+    {
+      $set: {
+        password: "aaaa",
+      },
+    },
+    { new: true }
+  )
+    .then((res) => res)
+    .catch((err) => err);
+  console.log(updateUserMany);
+  console.log(user);
+}
+
+// updateMany();
+
+// delete data from mongodb
+
+async function dataDelete() {
+  const userDelete = await UserModel.findByIdAndDelete(
+    "655af180948ea00d97fc5004"
+  )
+    .then((res) => res)
+    .catch((err) => err);
+  console.log(userData);
+}
+
+// dataDelete();
+
+// data delete one with field
+
+async function dataDeleteWithField() {
+  const userDelete = await UserModel.findOneAndDelete({
+    email: "avijit.saha@gmail.com",
+  })
+    .then((res) => res)
+    .catch((err) => err);
+  console.log(userData);
+}
+
+dataDeleteWithField();
+
